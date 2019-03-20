@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+
+    <member name="TorchTransformer">
+      <summary>
+        The <see cref="TorchTransformer"/> is just for test.
+      </summary>
+    </member>
+  </members>
+</doc>
