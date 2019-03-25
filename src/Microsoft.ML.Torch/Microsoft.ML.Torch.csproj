@@ -10,8 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpTorch" Version="0.1.4" />
-    <PackageReference Include="TorchSharp" Version="0.1.0" />
+    <PackageReference Include="SharpTorch" Version="0.1.7" />
   </ItemGroup>
   
   <ItemGroup>
