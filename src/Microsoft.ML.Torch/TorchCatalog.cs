@@ -5,17 +5,17 @@
 using Microsoft.ML.Data;
 using Microsoft.ML.Torch;
 using Microsoft.ML.Transforms;
-using static Microsoft.ML.Transforms.TorchTransformer;
+using static Microsoft.ML.Transforms.TorchScoringTransformer;
 
 namespace Microsoft.ML
 {
-    /// <include file='doc.xml' path='doc/members/member[@name="TorchTransformer"]/*' />
     public static class TorchCatalog
     {
         /// <summary>
         /// Load TensorFlow model into memory. This is the convenience method that allows the model to be loaded once
         /// and subsequently use it for querying schema and creation of
-        /// <see cref="TorchEstimator"/> using <see cref="TorchModel.ScoreTorchModel(long[])"/>.
+        /// <see cref="TorchScoringEstimator"/> using <see cref="TorchModel.ScoreTorchModel(string, long[][], string[])"/>
+        /// or <see cref="TorchModel.ScoreTorchModel(string, long[], string)"/>.
         /// </summary>
         /// <param name="catalog">The transform's catalog.</param>
         /// <param name="modelLocation">Location of the TensorFlow model.</param>

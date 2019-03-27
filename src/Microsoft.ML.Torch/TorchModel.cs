@@ -2,15 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Data.DataView;
-using static Microsoft.ML.Transforms.TorchTransformer;
+using System;
+using Microsoft.ML.Runtime;
+using Microsoft.ML.Transforms;
 
 namespace Microsoft.ML.Torch
 {
     /// <summary>
     /// This class holds the information related to Torch model.
     /// It provides some convenient methods to query the model schema as well as
-    /// creation of <see cref="TorchEstimator"/> object.
+    /// creation of <see cref="TorchScoringEstimator"/> object.
     /// </summary>
     public sealed class TorchModel
     {
@@ -32,14 +33,11 @@ namespace Microsoft.ML.Torch
             ModelPath = modelLocation;
         }
 
-        /// <summary>
-        /// Get <see cref="DataViewSchema"/> for complete model.
-        /// Every node in the Torch model will be included in the <see cref="DataViewSchema"/> object.
-        /// </summary>
+        // REVIEW: we need to figure out what this was doing in tensorflow models and whether it makes sense to have in torch models.
+        // I guess it's a utility method to inspect the schema of the model when you load the model. Is it the input schema or the output schema?
         public DataViewSchema GetModelSchema()
         {
-            //return TorchUtils.GetModelSchema(_env);
-            return null;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -52,7 +50,37 @@ namespace Microsoft.ML.Torch
         /// ]]>
         /// </format>
         /// </example>
-        public TorchEstimator ScoreTorchModel(long[] shape)
-            => new TorchEstimator(_env, shape, this);
+        public TorchScoringEstimator ScoreTorchModel(string outputColumnName, long[][] shapes, string[] inputColumnNames = null)
+        {
+            var options = new TorchScoringEstimator.Options {
+                OutputColumnName = outputColumnName,
+                InputColumnNames = inputColumnNames ?? new[] { outputColumnName },
+                InputShapes = shapes,
+                ModelLocation = ModelPath
+            };
+            return new TorchScoringEstimator(_env, options, this);
+        }
+
+        /// <summary>
+        /// Scores a dataset using a pre-traiend <a href="https://www.pytorch.org/">Torch</a> model.
+        /// </summary>
+        /// <example>
+        /// <format type="text/markdown">
+        /// <![CDATA[
+        /// [!code-csharp[ScoreTorchModel](~/../docs/samples/docs/samples/Microsoft.ML.Samples/Dynamic/TorchTransform.cs)]
+        /// ]]>
+        /// </format>
+        /// </example>
+        public TorchScoringEstimator ScoreTorchModel(string outputColumnName, long[] shape, string inputColumnNames = null)
+        {
+            var options = new TorchScoringEstimator.Options
+            {
+                OutputColumnName = outputColumnName,
+                InputColumnNames = new[] { inputColumnNames } ?? new[] { outputColumnName },
+                InputShapes = new[] { shape },
+                ModelLocation = ModelPath
+            };
+            return new TorchScoringEstimator(_env, options, this);
+        }
     }
 }

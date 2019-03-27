@@ -5,8 +5,6 @@
     <IncludeInPackage>Microsoft.ML.Torch</IncludeInPackage>
     <DefineConstants>CORECLR</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>E:\Source\Repos\ML.Net\Tools/Open.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

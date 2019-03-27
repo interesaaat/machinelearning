@@ -4,7 +4,8 @@
 
 using System;
 using System.IO;
-using Microsoft.Data.DataView;
+using Microsoft.ML.Data;
+using Microsoft.ML.Runtime;
 using TorchSharp.Tensor;
 
 namespace Microsoft.ML.Torch
@@ -93,6 +94,29 @@ namespace Microsoft.ML.Torch
                     return NumberDataViewType.Int16;
                 default:
                     return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a folder at a given path. Do nothing if folder already exists.
+        /// </summary>
+        internal static void CreateFolder(IHostEnvironment env, string folder)
+        {
+            Contracts.Check(env != null, nameof(env));
+            env.CheckNonWhiteSpace(folder, nameof(folder));
+
+            // If directory exists, do nothing.
+            if (Directory.Exists(folder))
+                return;
+
+            // REVIEW: should we do something similar to tensorflow transform and use CreateTempDirectoryWithAcl?
+            try
+            {
+                Directory.CreateDirectory(folder);
+            }
+            catch (Exception exc)
+            {
+                throw Contracts.ExceptParam(nameof(folder), $"Failed to create folder for the provided path: {folder}. \nException: {exc.Message}");
             }
         }
     }
