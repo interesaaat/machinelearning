@@ -257,7 +257,7 @@ namespace Microsoft.ML.Transforms
                     }
                     else
                     {
-                        // If the column in the input schema is one dimension we make sure that the total size of the TF shape matches.
+                        // If the column in the input schema is one dimension we make sure that the total size of the Torch shape matches.
                         long valCount = _parent.InputShapes[i].Aggregate(1, (long x, long y) => x * y);
 
                         if (vectorType.Size != valCount)
@@ -278,11 +278,13 @@ namespace Microsoft.ML.Transforms
 
             protected override Delegate MakeGetter(DataViewRow input, int iinfo, Func<int, bool> activeOutput, out Action disposer)
             {
+                disposer = null;
                 Host.AssertValue(input);
-                var inputTensors = new ITorchTensor<float>[_inputColIndices.Length];
 
                 ValueGetter<VBuffer<float>> valuegetter = (ref VBuffer<float> dst) =>
                 {
+                    var inputTensors = new ITorchTensor<float>[_inputColIndices.Length];
+
                     for (int i = 0; i < _inputColIndices.Length; i++)
                         inputTensors[i] = CreateTensorValueGetterVec<float>(input, _inputColIndices[i], _parent.InputShapes[i]);
 
@@ -292,17 +294,13 @@ namespace Microsoft.ML.Transforms
 
                     result.Data.CopyTo(editor.Values);
                     dst = editor.Commit();
-                    result.Dispose();
-                };
 
-                // REVIEW: not sure we need the below. Alos, why are we not disposing the input tensors?
-                disposer = () =>
-                {
+                    // Dispose the Torch tensors used to computer the dst vector.
                     if (inputTensors != null)
                         foreach (var tensor in inputTensors)
                             tensor?.Dispose();
+                    result.Dispose();
                 };
-
                 return valuegetter;
             }
 

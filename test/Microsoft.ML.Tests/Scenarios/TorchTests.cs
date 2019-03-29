@@ -15,7 +15,7 @@ namespace Microsoft.ML.Tests.Scenarios
         {
         }
 
-        private class MINSTInputData
+        private class MNISTInputData
         {
             [VectorType(1, 3, 224, 224)]
             public float[] Features { get; set; }
@@ -32,11 +32,11 @@ namespace Microsoft.ML.Tests.Scenarios
         {
             var mlContext = new MLContext();
             var ones = FloatTensor.Ones(new long[] { 1, 3, 224, 224 });
-            var data = new MINSTInputData
+            var data = new MNISTInputData
             {
                 Features = ones.Data.ToArray()
             };
-            var dataPoint = new List<MINSTInputData>() { data };
+            var dataPoint = new List<MNISTInputData>() { data };
 
             var dataView = mlContext.Data.LoadFromEnumerable(dataPoint);
 
@@ -55,11 +55,11 @@ namespace Microsoft.ML.Tests.Scenarios
         {
             var mlContext = new MLContext();
             var ones = FloatTensor.Ones(new long[] { 1, 3, 224, 224 });
-            var datapoint = new MINSTInputData
+            var datapoint = new MNISTInputData
             {
                 Features = ones.Data.ToArray()
             };
-            var data = new List<MINSTInputData>() { datapoint, datapoint, datapoint, datapoint, datapoint };
+            var data = new List<MNISTInputData>() { datapoint, datapoint, datapoint, datapoint, datapoint };
 
             var dataView = mlContext.Data.LoadFromEnumerable(data);
 
