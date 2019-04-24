@@ -34,7 +34,7 @@ namespace Microsoft.ML.Tests.Scenarios
             var ones = FloatTensor.Ones(new long[] { 1, 3, 224, 224 });
             var data = new MNISTInputData
             {
-                Features = ones.Data.ToArray()
+                Features = ones.Data<float>().ToArray()
             };
             var dataPoint = new List<MNISTInputData>() { data };
 
@@ -57,7 +57,7 @@ namespace Microsoft.ML.Tests.Scenarios
             var ones = FloatTensor.Ones(new long[] { 1, 3, 224, 224 });
             var datapoint = new MNISTInputData
             {
-                Features = ones.Data.ToArray()
+                Features = ones.Data<float>().ToArray()
             };
             var data = new List<MNISTInputData>() { datapoint, datapoint, datapoint, datapoint, datapoint };
 

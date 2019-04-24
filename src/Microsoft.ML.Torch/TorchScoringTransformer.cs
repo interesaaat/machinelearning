@@ -283,33 +283,33 @@ namespace Microsoft.ML.Transforms
 
                 ValueGetter<VBuffer<float>> valuegetter = (ref VBuffer<float> dst) =>
                 {
-                    var inputTensors = new ITorchTensor<float>[_inputColIndices.Length];
+                    var inputTensors = new TorchTensor[_inputColIndices.Length];
 
                     for (int i = 0; i < _inputColIndices.Length; i++)
                         inputTensors[i] = CreateTensorValueGetterVec<float>(input, _inputColIndices[i], _parent.InputShapes[i]);
 
-                    ITorchTensor<float> result = _parent.Module.Forward(inputTensors);
+                    TorchTensor result = _parent.Module.Forward(inputTensors);
                     var resultSize = result.NumberOfElements;
                     var editor = VBufferEditor.Create(ref dst, (int)resultSize);
 
-                    result.Data.CopyTo(editor.Values);
+                    result.Data<float>().CopyTo(editor.Values);
                     dst = editor.Commit();
 
                     // Dispose the Torch tensors used to computer the dst vector.
                     if (inputTensors != null)
                         foreach (var tensor in inputTensors)
-                            tensor?.Dispose();
+                            tensor.Dispose();
                     result.Dispose();
                 };
                 return valuegetter;
             }
 
-            private ITorchTensor<T> CreateTensorValueGetterVec<T>(DataViewRow input, int colIndex, long[] shape)
+            private TorchTensor CreateTensorValueGetterVec<T>(DataViewRow input, int colIndex, long[] shape)
             {
                 var srcgetter = input.GetGetter<VBuffer<T>>(input.Schema[colIndex]);
                 VBuffer<T> vBuffer = default;
                 T[] denseData = default;
-                ITorchTensor<T> tensor = default;
+                TorchTensor tensor = default;
 
                 // Get the input data.
                 srcgetter(ref vBuffer);
